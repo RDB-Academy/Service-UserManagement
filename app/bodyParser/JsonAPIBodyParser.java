@@ -12,9 +12,11 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 
 /**
- * Parse the body as Json if the Content-Type is text/json or application/vnd.api+json.
+ * Parse the body as Json if the Content-Type is application/vnd.api+json.
  *
  * @author Fabio Mazzone [fabio.mazzone@me.com]
  */
@@ -34,12 +36,14 @@ public class JsonAPIBodyParser extends BodyParser.TolerantJson {
 
     @Override
     public Accumulator<ByteString, F.Either<Result, JsonNode>> apply(Http.RequestHeader request) {
-        System.out.println("JsonAPIBodyParser");
-        System.out.println(request.contentType().get());
-
-        return BodyParsers.validateContentType(errorHandler, request, "Expected application/vnd.api+json",
-                ct -> ct.equalsIgnoreCase("application/vnd.api+json"),
-                super::apply
-        );
+        if(!request.contentType().map(ct -> ct.equalsIgnoreCase("application/vnd.api+json")).orElse(false)) {
+            CompletionStage<Result> result = errorHandler.onClientError(request, Http.Status.UNSUPPORTED_MEDIA_TYPE, "Expected application/vnd.api+json");
+            return Accumulator.done(result.thenApply(F.Either::Left));
+        }
+        if(!request.accepts("application/vnd.api+json")) {
+            CompletionStage<Result> result = errorHandler.onClientError(request, Http.Status.NOT_ACCEPTABLE, "Expected application/vnd.api+json");
+            return Accumulator.done(result.thenApply(F.Either::Left));
+        }
+        return super.apply(request);
     }
 }

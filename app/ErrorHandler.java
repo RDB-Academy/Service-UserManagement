@@ -1,14 +1,20 @@
+import akka.util.ByteString;
+import com.google.common.collect.ImmutableMap;
 import play.Configuration;
 import play.Environment;
 import play.api.OptionalSourceMapper;
+import play.api.mvc.ResponseHeader;
 import play.api.routing.Router;
+import play.http.HttpEntity;
 import play.http.HttpErrorHandler;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import play.twirl.api.Content;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -37,6 +43,9 @@ public class ErrorHandler implements HttpErrorHandler {
 
     @Override
     public CompletionStage<Result> onClientError(Http.RequestHeader request, int statusCode, String message) {
+        HttpEntity.Strict httpEntity;
+        Result result;
+
         System.out.println("- onClientError: ");
         System.out.println("    - request   : " + request);
         System.out.println("    - StatusCode: " + statusCode);
@@ -50,15 +59,19 @@ public class ErrorHandler implements HttpErrorHandler {
             case Http.Status.FORBIDDEN: // 403
                 break;
             case Http.Status.NOT_FOUND: // 404
-                break;
+                return CompletableFuture.completedFuture(Results.notFound(message));
             case Http.Status.METHOD_NOT_ALLOWED: // 405
                 break;
             case Http.Status.NOT_ACCEPTABLE: // 406
-                break;
+                httpEntity = new HttpEntity.Strict(ByteString.fromString(message + "\n"), Optional.of("application/vnd.api+json"));
+                result = new Result(Http.Status.NOT_ACCEPTABLE, httpEntity);
+                return CompletableFuture.completedFuture(result);
             case Http.Status.REQUEST_TIMEOUT: // 408
                 break;
             case Http.Status.UNSUPPORTED_MEDIA_TYPE: // 415
-                return CompletableFuture.completedFuture(Results.status(Http.Status.UNSUPPORTED_MEDIA_TYPE));
+                httpEntity = new HttpEntity.Strict(ByteString.fromString(message + "\n"), Optional.of("application/vnd.api+json"));
+                result = new Result(Http.Status.UNSUPPORTED_MEDIA_TYPE, httpEntity);
+                return CompletableFuture.completedFuture(result);
             case Http.Status.TOO_MANY_REQUESTS: // 429
                 break;
             default:
