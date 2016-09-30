@@ -34,6 +34,9 @@ public class JsonAPIBodyParser extends BodyParser.TolerantJson {
 
     @Override
     public Accumulator<ByteString, F.Either<Result, JsonNode>> apply(Http.RequestHeader request) {
+        System.out.println("JsonAPIBodyParser");
+        System.out.println(request.contentType().get());
+
         return BodyParsers.validateContentType(errorHandler, request, "Expected application/vnd.api+json",
                 ct -> ct.equalsIgnoreCase("application/vnd.api+json"),
                 super::apply

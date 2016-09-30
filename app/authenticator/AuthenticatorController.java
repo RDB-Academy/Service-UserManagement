@@ -24,8 +24,6 @@ public class AuthenticatorController extends Controller {
      */
     @BodyParser.Of(JsonAPIBodyParser.class)
     public Result login() {
-        System.out.println(request().contentType().get());
-        request().acceptedTypes().forEach(System.out::println);
         return TODO;
     }
 
