@@ -1,10 +1,4 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
-
-POST    /auth/login                 authenticator.AuthenticatorController.login
-
-# An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
-# An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+POST    /auth/login                 auth.AuthenticatorController.login
