@@ -1,14 +1,12 @@
-package authenticator;
+package authenticator.controller;
 
-import bodyParser.JsonAPIBodyParser;
-import play.http.HttpErrorHandler;
-import play.mvc.BodyParser;
+import authenticator.form.LoginForm;
+import authenticator.repository.CredentialRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import models.User;
+import play.libs.Json;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
-
-import javax.inject.Inject;
-import java.util.concurrent.CompletionStage;
 
 /**
  * This Class handles all Authenticator Actions.
@@ -16,28 +14,23 @@ import java.util.concurrent.CompletionStage;
  * @author Fabio Mazzone [fabio.mazzone@me.com]
  */
 public class AuthenticatorController extends Controller {
-
-    @Inject
-    HttpErrorHandler errorHandler;
-
-    class LoginForm {
-        protected String email;
-        protected String password;
-    }
-
     /**
      * This Methods validate the posted user credentials.
      * The function expect a JSON Object with the field "e-mail" and "password"
      * {
-     *     data: {
-     *         type: "loginForm",
-     *         id:   "max.mustermann@mail.de"
-     *         attributes
+     *     loginForm: {
+     *         email:   "max.mustermann@mail.de",
+     *         password:"password"
      *     }
      * }
      * @return this method returns a api token which the client must use to access the api
      */
     public Result login() {
+        JsonNode jsonBody = request().body().asJson();
+        LoginForm loginForm = Json.fromJson(jsonBody, LoginForm.class);
+        User user = CredentialRepository.authenticate(loginForm);
+
+
         return null;
     }
 
