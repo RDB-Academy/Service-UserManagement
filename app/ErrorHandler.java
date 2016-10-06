@@ -63,13 +63,13 @@ public class ErrorHandler implements HttpErrorHandler {
             case Http.Status.METHOD_NOT_ALLOWED: // 405
                 break;
             case Http.Status.NOT_ACCEPTABLE: // 406
-                httpEntity = new HttpEntity.Strict(ByteString.fromString(message + "\n"), Optional.of("application/vnd.api+json"));
+                httpEntity = new HttpEntity.Strict(ByteString.fromString(message + "\n"), Optional.of("application/json"));
                 result = new Result(Http.Status.NOT_ACCEPTABLE, httpEntity);
                 return CompletableFuture.completedFuture(result);
             case Http.Status.REQUEST_TIMEOUT: // 408
                 break;
             case Http.Status.UNSUPPORTED_MEDIA_TYPE: // 415
-                httpEntity = new HttpEntity.Strict(ByteString.fromString(message + "\n"), Optional.of("application/vnd.api+json"));
+                httpEntity = new HttpEntity.Strict(ByteString.fromString(message + "\n"), Optional.of("application/json"));
                 result = new Result(Http.Status.UNSUPPORTED_MEDIA_TYPE, httpEntity);
                 return CompletableFuture.completedFuture(result);
             case Http.Status.TOO_MANY_REQUESTS: // 429

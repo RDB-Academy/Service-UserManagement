@@ -37,7 +37,6 @@ public class AuthenticatorController extends Controller {
      * }
      * @return this method returns a api token which the client must use to access the api
      */
-    @BodyParser.Of(JsonAPIBodyParser.class)
     public Result login() {
         return null;
     }
