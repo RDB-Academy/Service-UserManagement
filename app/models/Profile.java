@@ -1,28 +1,25 @@
 package models;
 
 import com.avaje.ebean.Model;
-import play.data.validation.Constraints.Email;
-import play.data.validation.Constraints.Required;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
  *
  * @author Fabio Mazzone [fabio.mazzone@me.com]
  */
-public class User extends Model {
+@Entity
+public class Profile extends Model {
     @Id
     private long id;
 
-    @Email
-    @Required
-    @Column(unique = true, length = 255)
+    @Column(unique = true, length = 255, nullable = false)
     private String email;
 
-    public User(String email) {
-
-    }
+    @Column(unique = true, length = 255, nullable = false)
+    private String username;
 
     /**
      *
