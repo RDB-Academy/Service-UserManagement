@@ -1,13 +1,13 @@
-package authenticator.controller;
+package controller;
 
-import authenticator.form.LoginForm;
-
-import authenticator.repository.CredentialRepository;
+import form.LoginForm;
 import models.Profile;
+
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
+import service.ProfileService;
 
 import javax.inject.Inject;
 
@@ -22,7 +22,7 @@ public class AuthenticatorController extends Controller {
     FormFactory formFactory;
 
     @Inject
-    CredentialRepository credentialRepository;
+    private ProfileService profileService;
     /**
      * This Methods validate the posted user credentials.
      * The function expect a JSON Object with the field "e-mail" and "password"
@@ -42,12 +42,14 @@ public class AuthenticatorController extends Controller {
         }
         LoginForm loginForm = form.get();
         System.out.println("Lets Check the password... ");
-        Profile profile = credentialRepository.authenticate(loginForm);
+        Profile profile = profileService.authenticate(loginForm);
         if(profile != null) {
             System.out.println("Profile is NotNull ... ");
+            return ok("login successfully");
         }
         System.out.println("Profile is Null ... ");
-        return ok();
+        // ToDo
+        return forbidden("login failed");
     }
 
     public Result restore() {

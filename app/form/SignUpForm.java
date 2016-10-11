@@ -1,49 +1,42 @@
-package authenticator.form;
+package form;
 
 import play.data.validation.Constraints;
 
 /**
- *
- * @author Fabio Mazzone [fabio.mazzone@me.com]
+ * Created by fabiomazzone on 10.10.16.
  */
-public class LoginForm {
-
+public class SignUpForm extends LoginForm {
     @Constraints.Email
     @Constraints.Required
-    protected String email;
-
+    private
+    String email;
     @Constraints.Required
-    protected String password;
+    private
+    String password;
+    @Constraints.Required
+    private String username;
 
-    /**
-     *
-     * @param email
-     */
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /**
-     *
-     * @param password
-     */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /**
-     *
-     * @return
-     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getEmail() {
         return email;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getPassword() {
         return password;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
